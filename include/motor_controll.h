@@ -8,6 +8,13 @@ enum motor_id{
     rear_right
 };
 
+struct motor_data{
+    float fl;
+    float fr;
+    float rl;
+    float rr;
+};
+
 void motor_control(void);
 
 #endif
