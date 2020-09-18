@@ -42,7 +42,7 @@ void set_motor_speed(enum motor_id id, float power_multiplier, float speed){
     }
 }
 
-void motor_control(void){
+void motor_control(void *pvParameters){
 
     /*Initialize motor's power factors*/
     struct motor_data power_factors;

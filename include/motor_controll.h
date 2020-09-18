@@ -15,6 +15,6 @@ struct motor_data{
     float rr;
 };
 
-void motor_control(void);
+void motor_control(void *);
 
 #endif
