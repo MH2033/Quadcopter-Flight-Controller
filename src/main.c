@@ -8,5 +8,5 @@
 #include "motor_controll.h"
 
 void app_main() {
-    xTaskCreate(motor_control, "Motor Controll Task", 1024, NULL, tskIDLE_PRIORITY + 2, NULL);
+    xTaskCreate(motor_control, "Motor Controll Task", 2048, NULL, tskIDLE_PRIORITY + 2, NULL);
 }
