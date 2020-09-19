@@ -45,7 +45,7 @@ void udp_server_task(void *pvParameters) {
         }
         ESP_LOGI(TAG, "Socket bound, port %d", PORT);
 
-        while (1) {
+        for(;;){
 
             ESP_LOGI(TAG, "Waiting for data");
             struct sockaddr_in6 source_addr; // Large enough for both IPv4 or IPv6
@@ -76,6 +76,7 @@ void udp_server_task(void *pvParameters) {
                     break;
                 }
             }
+            vTaskDelay(20 / portTICK_PERIOD_MS);
         }
 
         if (sock != -1) {
