@@ -90,7 +90,7 @@ void motor_control(void *pvParameters){
         set_motor_speed(RL_MOTOR, power_factors.rl, motor_speeds.rl);
         set_motor_speed(RR_MOTOR, power_factors.rr, motor_speeds.rr);
 
-        vTaskDelay(50 / portTICK_PERIOD_MS);
+        vTaskDelay(20 / portTICK_PERIOD_MS);
 
     }
 
