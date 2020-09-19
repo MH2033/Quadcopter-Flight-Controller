@@ -19,6 +19,16 @@ QueueHandle_t power_factor_q = NULL;
 QueueHandle_t motor_speed_q = NULL;
 
 void app_main() {
+  esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+      ESP_ERROR_CHECK(nvs_flash_erase());
+      ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK(ret);
+
+    /*Initializing WiFi comunication*/
+    wifi_init_softap();
+
     /*Creating queues for motor control*/
     power_factor_q = xQueueCreate(2, sizeof(struct motor_data));
     motor_speed_q = xQueueCreate(2, sizeof(struct motor_data));
@@ -26,15 +36,6 @@ void app_main() {
     /*Starting motor control task*/
     xTaskCreate(motor_control, "Motor Controll Task", 2048, NULL, tskIDLE_PRIORITY + 2, NULL);
 
-    /*Initializing WiFi comunication*/
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-      ESP_ERROR_CHECK(nvs_flash_erase());
-      ret = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK(ret);
-    wifi_init_softap();
-
     /*Starting udp server in order to recieve control signals from application*/
-    xTaskCreate(udp_server_task, "udp_server", 4096, (void*)AF_INET, 5, NULL);
+    xTaskCreate(udp_server_task, "UPD Server", 4096, NULL, tskIDLE_PRIORITY + 2, NULL);
 }
