@@ -23,18 +23,18 @@ void set_motor_speed(enum motor_id id, float power_multiplier, float speed){
 
     switch (id) {
         case front_left:
-            mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM0A, power_multiplier * speed);
+            ESP_ERROR_CHECK(mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM0A, power_multiplier * speed));
             break;
         case front_right:
-            mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM0B, power_multiplier * speed);
+            ESP_ERROR_CHECK(mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM0B, power_multiplier * speed));
             break;
         
         case rear_left:
-            mcpwm_set_duty(MCPWM_UNIT_1, MCPWM_TIMER_0, MCPWM0A, power_multiplier * speed);
+            ESP_ERROR_CHECK(mcpwm_set_duty(MCPWM_UNIT_1, MCPWM_TIMER_0, MCPWM0A, power_multiplier * speed));
             break;
 
         case rear_right:
-            mcpwm_set_duty(MCPWM_UNIT_1, MCPWM_TIMER_0, MCPWM0B, power_multiplier * speed);
+            ESP_ERROR_CHECK(mcpwm_set_duty(MCPWM_UNIT_1, MCPWM_TIMER_0, MCPWM0B, power_multiplier * speed));
             break;
 
         default:
@@ -59,10 +59,10 @@ void motor_control(void *pvParameters){
     motor_speeds.rr = 0.0;
 
     /*Motor Controll pin initialization*/
-    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, FL_MOTOR);
-    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0B, FR_MOTOR);
-    mcpwm_gpio_init(MCPWM_UNIT_1, MCPWM0A, RL_MOTOR);
-    mcpwm_gpio_init(MCPWM_UNIT_1, MCPWM0B, RR_MOTOR);
+    ESP_ERROR_CHECK(mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, FL_MOTOR));
+    ESP_ERROR_CHECK(mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0B, FR_MOTOR));
+    ESP_ERROR_CHECK(mcpwm_gpio_init(MCPWM_UNIT_1, MCPWM0A, RL_MOTOR));
+    ESP_ERROR_CHECK(mcpwm_gpio_init(MCPWM_UNIT_1, MCPWM0B, RR_MOTOR));
 
     /*Configuring mcpwm parameters*/
     mcpwm_config_t pwm_config;
@@ -71,8 +71,8 @@ void motor_control(void *pvParameters){
     pwm_config.cmpr_b = 0;   
     pwm_config.counter_mode = MCPWM_UP_COUNTER;
     pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
-    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
-    mcpwm_init(MCPWM_UNIT_1, MCPWM_TIMER_0, &pwm_config);
+    ESP_ERROR_CHECK(mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config));
+    ESP_ERROR_CHECK(mcpwm_init(MCPWM_UNIT_1, MCPWM_TIMER_0, &pwm_config));
 
     for(;;){
         
