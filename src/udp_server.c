@@ -18,7 +18,7 @@
 
 static const char *TAG = "example";
 
-void udp_server_task(void *pvParameters) {
+void udp_server(void *pvParameters) {
     char rx_buffer[128];
     char addr_str[128];
     int ip_protocol = 0;

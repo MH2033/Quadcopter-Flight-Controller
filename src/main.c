@@ -34,8 +34,8 @@ void app_main() {
     motor_speed_q = xQueueCreate(2, sizeof(struct motor_data));
 
     /*Starting motor control task*/
-    xTaskCreate(motor_control, "Motor Controll Task", 2048, NULL, tskIDLE_PRIORITY + 2, NULL);
+    xTaskCreate(motor_control, "Motor Controll", 2048, NULL, tskIDLE_PRIORITY + 2, NULL);
 
     /*Starting udp server in order to recieve control signals from application*/
-    xTaskCreate(udp_server_task, "UPD Server", 4096, NULL, tskIDLE_PRIORITY + 2, NULL);
+    xTaskCreate(udp_server, "UPD Server", 4096, NULL, tskIDLE_PRIORITY + 2, NULL);
 }
