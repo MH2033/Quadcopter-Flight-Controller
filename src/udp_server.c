@@ -13,13 +13,17 @@
 #include "lwip/sockets.h"
 #include "lwip/sys.h"
 #include <lwip/netdb.h>
+#include <cJSON.h>
+#include <motor_controll.h>
+#include <control_data_handler.h>
 
 #define PORT 3333
 
-static const char *TAG = "example";
+static const char *TAG = "UDP Server";
+
 
 void udp_server(void *pvParameters) {
-    char rx_buffer[128];
+    char rx_buffer[256];
     char addr_str[128];
     int ip_protocol = 0;
     struct sockaddr_in6 dest_addr;
@@ -47,7 +51,7 @@ void udp_server(void *pvParameters) {
 
         for(;;){
 
-            ESP_LOGI(TAG, "Waiting for data");
+            // ESP_LOGI(TAG, "Waiting for data");
             struct sockaddr_in6 source_addr; // Large enough for both IPv4 or IPv6
             socklen_t socklen = sizeof(source_addr);
             int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer) - 1, 0, (struct sockaddr *)&source_addr, &socklen);
@@ -67,14 +71,15 @@ void udp_server(void *pvParameters) {
                 }
 
                 rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string...
-                ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
-                ESP_LOGI(TAG, "%s", rx_buffer);
+                
+                // ESP_LOGI(TAG, "Data recived");
+                handle_control_data(rx_buffer); //Parse the recived Json and create the controll signals
 
-                int err = sendto(sock, rx_buffer, len, 0, (struct sockaddr *)&source_addr, sizeof(source_addr));
-                if (err < 0) {
-                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
-                    break;
-                }
+                // int err = sendto(sock, rx_buffer, len, 0, (struct sockaddr *)&source_addr, sizeof(source_addr));
+                // if (err < 0) {
+                //     ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+                //     break;
+                // }
             }
             vTaskDelay(20 / portTICK_PERIOD_MS);
         }
