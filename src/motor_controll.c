@@ -2,6 +2,7 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include "esp_attr.h"
+#include "esp_log.h"
 
 #include "driver/mcpwm.h"
 #include "soc/mcpwm_periph.h"
@@ -19,7 +20,7 @@
 extern QueueHandle_t power_factor_q;
 extern QueueHandle_t motor_speed_q;
 
-void set_motor_speed(enum motor_id id, float power_multiplier, float speed){
+void set_motor_speed(enum motor_id id, double power_multiplier, double speed){
 
     switch (id) {
         case front_left:
@@ -78,17 +79,20 @@ void motor_control(void *pvParameters){
         
         /*Recieve new power factors for each motor*/
         if(uxQueueMessagesWaiting(power_factor_q) > 0){
+            ESP_LOGI("Motor", "Recived %f", motor_speeds.fl);
             xQueueReceive(power_factor_q, &power_factors, 0);
         }
 
         if(uxQueueMessagesWaiting(motor_speed_q) > 0){
+            
             xQueueReceive(motor_speed_q, &motor_speeds, 0);
+            
         }
         
-        set_motor_speed(FL_MOTOR, power_factors.fl, motor_speeds.fl);
-        set_motor_speed(FR_MOTOR, power_factors.fr, motor_speeds.fr);
-        set_motor_speed(RL_MOTOR, power_factors.rl, motor_speeds.rl);
-        set_motor_speed(RR_MOTOR, power_factors.rr, motor_speeds.rr);
+        set_motor_speed(front_left, power_factors.fl, motor_speeds.fl);
+        set_motor_speed(front_right, power_factors.fr, motor_speeds.fr);
+        set_motor_speed(rear_left, power_factors.rl, motor_speeds.rl);
+        set_motor_speed(rear_right, power_factors.rr, motor_speeds.rr);
 
         vTaskDelay(20 / portTICK_PERIOD_MS);
 

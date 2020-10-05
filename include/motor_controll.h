@@ -9,10 +9,10 @@ enum motor_id{
 };
 
 struct motor_data{
-    float fl;
-    float fr;
-    float rl;
-    float rr;
+    double fl;
+    double fr;
+    double rl;
+    double rr;
 };
 
 void motor_control(void *);
