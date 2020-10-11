@@ -28,48 +28,19 @@ void handle_control_data(char *str){
     cJSON *roll_obj = cJSON_GetObjectItemCaseSensitive(json, "roll");
     cJSON *yaw_obj = cJSON_GetObjectItemCaseSensitive(json, "yaw");
     
-    // ESP_LOGI(TAG, "Json objects created");
     //Creating a motor_data instance to save the controll data
     struct motor_data *control_data = malloc(sizeof(struct motor_data));
 
-    // ESP_LOGI(TAG, "Control Data structure allocated");
     //Getting control data from objects
-    double power = -1, pitch = -1, roll = -1, yaw = -1;
+    double power = 0, pitch = 0, roll = 0, yaw = 0;
 
     //Error flag for reporting error in the sent data
     esp_err_t err = ESP_OK;
-    // ESP_LOGI(TAG, "power value: %f", power_obj -> valuedouble);
-    if((power_obj -> valuedouble) <= 100 && (power_obj -> valuedouble) >= 0){
-        power = power_obj -> valuedouble;
-    }
 
-    else {
-        err = ESP_FAIL;
-    }
-    
-    if((pitch_obj -> valuedouble) <= 20 && (pitch_obj -> valuedouble) >= -20){
-        pitch = pitch_obj -> valuedouble;
-    }
-
-    else {
-        err = ESP_FAIL;
-    }
-
-    if((roll_obj -> valuedouble) <= 20 && (roll_obj -> valuedouble) >= -20){
-        roll = roll_obj -> valuedouble;
-    }
-
-    else {
-        err = ESP_FAIL;
-    }
-
-    if((yaw_obj -> valuedouble) <= 20 && (yaw_obj -> valuedouble) >= -20){
-        yaw = yaw_obj -> valuedouble;
-    }
-    
-    else {
-        err = ESP_FAIL;
-    }
+    power = power_obj -> valueint;
+    pitch = pitch_obj -> valueint;
+    roll = roll_obj -> valueint;
+    yaw = yaw_obj -> valueint;
 
     if(err == ESP_OK){
         control_data -> fl = control_data -> fr = control_data -> rl = control_data -> rr = power;
@@ -102,7 +73,6 @@ void handle_control_data(char *str){
             control_data -> fr += -yaw;
             control_data -> rl += -yaw;
         }
-        // ESP_LOGI(TAG, "Reached Queue");
         xQueueSend(motor_speed_q, (void *)control_data, 0);
     }
     cJSON_Delete(json);
